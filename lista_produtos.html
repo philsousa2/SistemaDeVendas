@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt_Br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Financeiro</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Importe a biblioteca do Firebase -->
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body>
+    <form action="">
+    <input type="text" id="produto" placeholder="Nome do Produto">
+    <input type="number" id="valor" placeholder="Valor">
+</form>
+    <button onclick="adicionarProduto()">Adicionar Produto</button>
+  <h1>Lista de Produtos</h1>
+
+  <ul id="listaProdutos"></ul>
+  <script src="script.js"></script>
+</body>
+</html>

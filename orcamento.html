@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orçamento</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>  
+</head>
+<body>
+  <h1>Orçamento</h1>
+  <form id="budgetForm">
+    <label for="pedido">Número do Pedido:</label>
+    <input type="text" id="pedido" readonly>
+
+    <label for="cliente">Nome do Cliente:</label>
+    <input type="text" id="cliente" required>
+
+    <label for="telefone">Telefone:</label>
+    <input type="tel" id="telefone"  required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" required>
+
+    <div>
+      <label for="produtos">Produtos:</label>
+      <select id="produtos"></select>
+      <input type="number" id="quantidade" value="1">
+      <button type="button" onclick="adicionarProdutoAoOrcamento()">Adicionar</button>
+    </div>
+
+    <h3>Orçamento</h3>
+    <table id="listaProdutosOrcamento">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Valor</th>
+          <th>Quantidade</th>
+          <th>Remover</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <p>
+      Total: <input type="text" id="total" readonly required>
+    </p>
+
+    <button id="submitButton" onclick="submitBudgetForm()">Enviar Orçamento</button>
+    <button id="saveButton" style="display: none;" onclick="salvarAlteracoesOrcamento()">Salvar Alterações</button>
+  </form>
+  <h2>Orçamentos Salvos</h2>
+  <ul id="listaOrcamentosSalvos"></ul>
+
+  <script src="script.js"></script>
+</body>
+</html>
