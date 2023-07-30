@@ -255,7 +255,8 @@ function updateTable() {
 
   // Função para gerar um número de pedido aleatório
 function generateOrderNumber() {
-    return Math.floor(Math.random() * 100000);
+ let numeropedido = 0
+    return numeropedido ++
   }
 
 // Função para calcular o valor total do orçamento
