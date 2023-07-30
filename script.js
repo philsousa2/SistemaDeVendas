@@ -324,41 +324,96 @@ function listarOrcamentosSalvos() {
   produtosOrcamento.length = 0; // Limpar a lista de produtos do orçamento antes de exibir os detalhes
   database.ref('orcamentos').once('value')
     .then(snapshot => {
-        snapshot.forEach(orcamentoSnapshot => {
-            const orcamento = orcamentoSnapshot.val();
-            orcamento.key = orcamentoSnapshot.key;
-        
-            const listItem = document.createElement('li');
-            // Exibir os detalhes do orçamento (código existente)
-        
-            // Botão Editar
-            const editButton = document.createElement('button');
-            editButton.textContent = "Editar";
-            editButton.onclick = () => editarOrcamento(orcamento.key, orcamento);
-            listItem.appendChild(editButton);
-        
-            // Botão Excluir
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = "Excluir";
-            deleteButton.onclick = () => deletarOrcamento(orcamento.key);
-            listItem.appendChild(deleteButton);
-        
-            // Botão "Enviar Orçamento"
-            const sendButton = document.createElement('button');
-            sendButton.textContent = "Enviar Orçamento";
-            sendButton.onclick = () => enviarOrcamentoPorEmail(orcamento);
-            listItem.appendChild(sendButton);
-        
-            listaOrcamentosSalvos.appendChild(listItem);
-          });
+      snapshot.forEach(orcamentoSnapshot => {
+        const orcamento = orcamentoSnapshot.val();
+        const listItem = document.createElement('li');
+
+        // Exibir os detalhes do orçamento
+        const details = document.createElement('div');
+        details.textContent = `Número do Pedido: ${orcamento.pedido}, Cliente: ${orcamento.cliente},  Total: R$ ${orcamento.total.toFixed(2)}`;
+        listItem.appendChild(details);
+
+        // Adicionar os produtos do orçamento
+        const produtosList = document.createElement('ul');
+        orcamento.itens.forEach(produtoOrcamento => {
+          const produtoItem = document.createElement('li');
+          produtoItem.textContent = `${produtoOrcamento.nome}: R$ ${produtoOrcamento.valor.toFixed(2)}, Quantidade: ${produtoOrcamento.quantidade}`;
+          produtosList.appendChild(produtoItem);
+        });
+        listItem.appendChild(produtosList);
+
+        // Adicionar botão de edição
+        const editButton = document.createElement('button');
+        editButton.textContent = "Editar";
+        editButton.onclick = () => editarOrcamento(orcamentoSnapshot.key, orcamento);
+        listItem.appendChild(editButton);
+
+        // Adicionar botão de exclusão
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = "Excluir";
+        deleteButton.onclick = () => deletarOrcamento(orcamentoSnapshot.key);
+        listItem.appendChild(deleteButton);
+
+        // Botão "Enviar Orçamento"
+        const sendButton = document.createElement('button');
+        sendButton.textContent = "Enviar Orçamento";
+        sendButton.onclick = () => enviarOrcamentoPorEmail(orcamento);
+        listItem.appendChild(sendButton);
+
+
+        listaOrcamentosSalvos.appendChild(listItem);
+      });
     })
     .catch(error => {
       console.error(error);
     });
 }
 
-// ... (código anterior)
+/// POPUP ORÇAMENTO
 
+function enviarOrcamentoPorEmail(orcamento) {
+    // Crie o conteúdo do popup formatado como uma nota fiscal
+    let conteudoNotaFiscal = `
+      <style>
+        /* Estilos para a nota fiscal */
+        .nota-fiscal {
+          font-family: Arial, sans-serif;
+          background-color: #f9f9f9;
+          padding: 10px;
+          border: 1px solid #ccc;
+          max-width: 400px;
+        }
+        .cliente {
+          font-weight: bold;
+        }
+        .item {
+          margin-bottom: 5px;
+        }
+      </style>
+      <div class="nota-fiscal">
+        <div class="cliente">Cliente: ${orcamento.cliente}</div>
+        <div>Telefone: ${orcamento.telefone}</div>
+        <div>Email: ${orcamento.email}</div>
+        <div>Itens:</div>
+    `;
+  
+    orcamento.itens.forEach(item => {
+      conteudoNotaFiscal += `<div class="item">${item.nome}: R$ ${item.valor.toFixed(2)} x ${item.quantidade}</div>`;
+    });
+  
+    conteudoNotaFiscal += `<div class="total">Total: R$ ${orcamento.total.toFixed(2)}</div></div>`;
+  
+    // Gerar o PDF a partir do conteúdo formatado como uma nota fiscal
+    const opt = {
+      margin: 10,
+      filename: 'orcamento.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    };
+  
+    html2pdf().from(conteudoNotaFiscal).set(opt).save();
+  }
 // Variável global para armazenar o ID do orçamento em edição
 let orcamentoEmEdicaoId = null;
 

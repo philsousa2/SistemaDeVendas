@@ -10,7 +10,7 @@
 </head>
 <body>
   <h1>Orçamento</h1>
-  <form id="budgetForm">
+  <div id="budgetForm">
     <label for="pedido">Número do Pedido:</label>
     <input type="text" id="pedido" readonly>
 
@@ -49,10 +49,12 @@
 
     <button id="submitButton" onclick="submitBudgetForm()">Enviar Orçamento</button>
     <button id="saveButton" style="display: none;" onclick="salvarAlteracoesOrcamento()">Salvar Alterações</button>
-  </form>
+  </div>
+
   <h2>Orçamentos Salvos</h2>
   <ul id="listaOrcamentosSalvos"></ul>
 
   <script src="script.js"></script>
+  <script src="/html2pdf.bundle.js"></script>
 </body>
 </html>
