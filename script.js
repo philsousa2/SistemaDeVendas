@@ -270,6 +270,7 @@ function calcularTotal() {
     return total;
   }
   
+  
   /// Função para enviar o formulário de orçamento
   async function submitBudgetForm() {
     const pedido = generateOrderNumber().toString(); // Converter para string
@@ -311,7 +312,7 @@ function calcularTotal() {
     });
   
     alert("Orçamento enviado com sucesso!");
-    window.location.reload();
+   window.location.reload();
   
     // Atualizar a lista de orçamentos salvos após o envio de um novo orçamento
     listarOrcamentosSalvos();
@@ -323,38 +324,33 @@ function listarOrcamentosSalvos() {
   produtosOrcamento.length = 0; // Limpar a lista de produtos do orçamento antes de exibir os detalhes
   database.ref('orcamentos').once('value')
     .then(snapshot => {
-      snapshot.forEach(orcamentoSnapshot => {
-        const orcamento = orcamentoSnapshot.val();
-        const listItem = document.createElement('li');
-
-        // Exibir os detalhes do orçamento
-        const details = document.createElement('div');
-        details.textContent = `Número do Pedido: ${orcamento.pedido}, Cliente: ${orcamento.cliente},  Total: R$ ${orcamento.total.toFixed(2)}`;
-        listItem.appendChild(details);
-
-        // Adicionar os produtos do orçamento
-        const produtosList = document.createElement('ul');
-        orcamento.itens.forEach(produtoOrcamento => {
-          const produtoItem = document.createElement('li');
-          produtoItem.textContent = `${produtoOrcamento.nome}: R$ ${produtoOrcamento.valor.toFixed(2)}, Quantidade: ${produtoOrcamento.quantidade}`;
-          produtosList.appendChild(produtoItem);
-        });
-        listItem.appendChild(produtosList);
-
-        // Adicionar botão de edição
-        const editButton = document.createElement('button');
-        editButton.textContent = "Editar";
-        editButton.onclick = () => editarOrcamento(orcamentoSnapshot.key, orcamento);
-        listItem.appendChild(editButton);
-
-        // Adicionar botão de exclusão
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = "Excluir";
-        deleteButton.onclick = () => deletarOrcamento(orcamentoSnapshot.key);
-        listItem.appendChild(deleteButton);
-
-        listaOrcamentosSalvos.appendChild(listItem);
-      });
+        snapshot.forEach(orcamentoSnapshot => {
+            const orcamento = orcamentoSnapshot.val();
+            orcamento.key = orcamentoSnapshot.key;
+        
+            const listItem = document.createElement('li');
+            // Exibir os detalhes do orçamento (código existente)
+        
+            // Botão Editar
+            const editButton = document.createElement('button');
+            editButton.textContent = "Editar";
+            editButton.onclick = () => editarOrcamento(orcamento.key, orcamento);
+            listItem.appendChild(editButton);
+        
+            // Botão Excluir
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = "Excluir";
+            deleteButton.onclick = () => deletarOrcamento(orcamento.key);
+            listItem.appendChild(deleteButton);
+        
+            // Botão "Enviar Orçamento"
+            const sendButton = document.createElement('button');
+            sendButton.textContent = "Enviar Orçamento";
+            sendButton.onclick = () => enviarOrcamentoPorEmail(orcamento);
+            listItem.appendChild(sendButton);
+        
+            listaOrcamentosSalvos.appendChild(listItem);
+          });
     })
     .catch(error => {
       console.error(error);
